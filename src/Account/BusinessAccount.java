@@ -1,14 +1,16 @@
 package Account;
 
-import people.AccountOwner;
+import people.Owner;
 
-public class BusinessAcc extends BankAcc{
+public class BusinessAccount extends BankAccount {
+    private static final double INTEREST_RATE = 0.005; // 0.5 %
+
     private String accounttype = "Business Account";
-    public BusinessAcc(AccountOwner owner) {
+    public BusinessAccount(Owner owner) {
         super(owner);
     }
 
-    public BusinessAcc(AccountOwner owner, double balance) {
+    public BusinessAccount(Owner owner, double balance) {
         super(owner, balance);
     }
 
@@ -22,5 +24,11 @@ public class BusinessAcc extends BankAcc{
         }
         this.setBalance(newBalance);
 
+    }
+
+    @Override
+    public void calculateInterest() {
+        double interest = this.getBalance() * INTEREST_RATE;
+        this.setBalance(this.getBalance() + interest);
     }
 }

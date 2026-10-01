@@ -1,6 +1,6 @@
 package people;
 
-public class AccountOwner {
+public class Owner {
 
     private String name;
 
@@ -8,7 +8,7 @@ public class AccountOwner {
 
     private String uuid;
 
-    public AccountOwner(String name, String lastname) {
+    public Owner(String name, String lastname) {
         this.name = name;
         this.lastname = lastname;
     }

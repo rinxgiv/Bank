@@ -1,24 +1,34 @@
 package Account;
 
-import people.AccountOwner;
+import notifiers.ConsoleNotifier;
+import notifiers.Notifiers;
+import people.Owner;
 
-public abstract class BankAcc {
+public abstract class BankAccount implements InterestPoint {
 
     private String uuid;
 
-    private AccountOwner owner;
+    private Owner owner;
 
     private double balance;
 
+    protected Notifiers notifier = new ConsoleNotifier();
+
 private String accountnum;
 
-    public BankAcc(AccountOwner owner) {
+    public BankAccount(Owner owner) {
         this.owner = owner;
         this.balance = 0;
     }
 
-    public BankAcc(AccountOwner owner, double balance) {
+    public BankAccount(Owner owner, double balance) {
         this.owner = owner;
+        this.balance = balance;
+    }
+
+    public BankAccount(Owner owner, String accountnum, double balance) {
+        this.owner = owner;
+        this.accountnum = accountnum;
         this.balance = balance;
     }
 
@@ -32,7 +42,7 @@ private String accountnum;
         this.balance = balance;
     }
     public void sub(double amount){
-        System.out.println("Sub amount: " + amount);
+        this.notifier.notify("Sub amount: " + amount);
 
         double newBalance = this.balance - amount;
 
