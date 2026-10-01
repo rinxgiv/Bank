@@ -3,6 +3,7 @@ import people.Owner;
 import transfers.TransferService;
 import transfers.DepositTransferService;
 import transfers.WithdrawTransferService;
+import accounts.AccountNumberService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,12 @@ public class Main {
         Owner accountOwner = new Owner("Tomas", "Pesek");
         accountOwner.setLastname("Pokorny");
 
-        BankAccount bankAccount = new CurrentAccount(accountOwner, "123", 500);
+        // --- Simulace generování čísla účtu ---
+        AccountNumberService accountNumberService = new AccountNumberService();
+        String generatedNumber = accountNumberService.generate();
+        System.out.println("Generated account number: " + generatedNumber);
+
+        BankAccount bankAccount = new CurrentAccount(accountOwner, generatedNumber, 500);
         BankAccount studentAccount = new StudentAccount(accountOwner, "123", 500, "Delta");
         BankAccount savingAccount = new SavingAccount(accountOwner, "123");
 
