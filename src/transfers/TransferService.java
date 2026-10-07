@@ -2,10 +2,19 @@ package transfers;
 
 import Account.BankAccount;
 import Account.BusinessAccount;
+import factory.TransactionFactory;
 
 public class TransferService {
 
     private static final double BUSINESS_ACCOUNT_TRANSFER_FEE = 0.003;
+
+    private final TransferLoggerService transferLoggerService;
+
+    private final TransactionFactory transactionFactory = new TransactionFactory();
+
+    public TransferService(TransferLoggerService transferLoggerService) {
+        this.transferLoggerService = transferLoggerService;
+    }
 
     public void transfer(BankAccount from, BankAccount to, double amount) {
         if (from == null || to == null) {
@@ -33,6 +42,8 @@ public class TransferService {
 
         from.setBalance(from.getBalance() - totalWithdrawn);
         to.setBalance(to.getBalance() + amount);
+
+        transferLoggerService.log(transactionFactory.createTransfer(from, to, amount, fee));
     }
 
 }

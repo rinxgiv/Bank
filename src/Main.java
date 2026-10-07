@@ -1,9 +1,11 @@
 import Account.*;
+import factory.BankAccountFactory;
 import people.Owner;
 import transfers.TransferService;
 import transfers.DepositTransferService;
 import transfers.WithdrawTransferService;
-import accounts.AccountNumberService;
+import transfers.TransferLoggerService;
+import transactions.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +17,14 @@ public class Main {
         Owner accountOwner = new Owner("Tomas", "Pesek");
         accountOwner.setLastname("Pokorny");
 
-        // --- Simulace generování čísla účtu ---
-        AccountNumberService accountNumberService = new AccountNumberService();
-        String generatedNumber = accountNumberService.generate();
-        System.out.println("Generated account number: " + generatedNumber);
+        BankAccountFactory bankAccountFactory = new BankAccountFactory();
 
-        BankAccount bankAccount = new CurrentAccount(accountOwner, generatedNumber, 500);
-        BankAccount studentAccount = new StudentAccount(accountOwner, "123", 500, "Delta");
-        BankAccount savingAccount = new SavingAccount(accountOwner, "123");
+        BankAccount bankAccount = bankAccountFactory.createCurrentAccount(accountOwner, 500);
+        BankAccount studentAccount = bankAccountFactory.createStudentAccount(accountOwner, 500, "Delta");
+        BankAccount savingAccount = bankAccountFactory.createSavingAccount(accountOwner);
+        BankAccount businessAccount = bankAccountFactory.createBusinessAccount(accountOwner, 2000);
+
+        System.out.println("Generated account number: " + bankAccount.getAccountnum());
 
 
         List<BankAccount> bankAccounts = new ArrayList<>();
@@ -50,7 +52,9 @@ public class Main {
 
         printBalance(bankAccount);
 
-        DepositTransferService depositTransferService = new DepositTransferService();
+        TransferLoggerService transferLoggerService = new TransferLoggerService();
+
+        DepositTransferService depositTransferService = new DepositTransferService(transferLoggerService);
         depositTransferService.deposit(bankAccount, 400);
         depositTransferService.deposit(bankAccount, 100);
         depositTransferService.deposit(bankAccount, 200);
@@ -58,7 +62,7 @@ public class Main {
 
         printBalance(bankAccount);
 
-        WithdrawTransferService withdrawTransferService = new WithdrawTransferService();
+        WithdrawTransferService withdrawTransferService = new WithdrawTransferService(transferLoggerService);
 
         withdrawTransferService.withdraw(bankAccount, 300);
         withdrawTransferService.withdraw(bankAccount, 300);
@@ -70,9 +74,7 @@ public class Main {
         printBalance(bankAccount);
 
         // --- Simulace převodu mezi dvěma účty ---
-        TransferService transferService = new TransferService();
-
-        BankAccount businessAccount = new BusinessAccount(accountOwner, 2000);
+        TransferService transferService = new TransferService(transferLoggerService);
 
         // běžný převod bez poplatku
         transferService.transfer(bankAccount, studentAccount, 100);
@@ -99,6 +101,17 @@ public class Main {
             transferService.transfer(bankAccount, studentAccount, 1_000_000); // nedostatek prostředků
         } catch (IllegalArgumentException e) {
             System.out.println("Rejected: " + e.getMessage());
+        }
+
+        // --- Historie transakcí ---
+        System.out.println("All transactions:");
+        for (Transaction transaction : transferLoggerService.getAll()) {
+            System.out.println(transaction);
+        }
+
+        System.out.println("Student account transactions:");
+        for (Transaction transaction : transferLoggerService.getByAccount(studentAccount.getAccountnum())) {
+            System.out.println(transaction);
         }
 
     }
