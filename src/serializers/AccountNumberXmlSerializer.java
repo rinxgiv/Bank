@@ -32,7 +32,7 @@ public class AccountNumberXmlSerializer implements Serializer {
         return xStream.toXML(accountNumbers);
     }
 
-    // do XML jde jen číslo účtu, stejně jako u AccountNumberJsonSerializer
+    // do XML jde jen číslo účtu
     private static class AccountNumber {
 
         private final String accountNumber;
