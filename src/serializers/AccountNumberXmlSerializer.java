@@ -20,7 +20,6 @@ public class AccountNumberXmlSerializer implements Serializer {
         return xStream.toXML(new AccountNumber(account.getAccountnum()));
     }
 
-    // výchozí serializeAll v rozhraní skládá JSON pole, pro XML ho přepíšeme
     @Override
     public String serializeAll(List<BankAccount> accounts) {
         List<AccountNumber> accountNumbers = new ArrayList<>();
@@ -31,15 +30,4 @@ public class AccountNumberXmlSerializer implements Serializer {
 
         return xStream.toXML(accountNumbers);
     }
-
-    // do XML jde jen číslo účtu
-    private static class AccountNumber {
-
-        private final String accountNumber;
-
-        AccountNumber(String accountNumber) {
-            this.accountNumber = accountNumber;
-        }
-    }
-
 }
