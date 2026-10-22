@@ -1,6 +1,9 @@
 import Account.*;
+import accounts.AccountCreationService;
+import accounts.AccountCreationService.AccountRequest;
 import accounts.AccountXmlService;
 import factory.BankAccountFactory;
+import notifiers.ConsoleNotifier;
 import people.Owner;
 import serializers.AccountNumberXmlSerializer;
 import serializers.Serializer;
@@ -20,11 +23,19 @@ public class Main {
         Owner accountOwner = new Owner("Iryna", "Pukas");
 
         BankAccountFactory bankAccountFactory = new BankAccountFactory();
+        AccountCreationService accountCreationService = new AccountCreationService(new ConsoleNotifier());
 
-        BankAccount bankAccount = bankAccountFactory.createCurrentAccount(accountOwner, 500);
-        BankAccount studentAccount = bankAccountFactory.createStudentAccount(accountOwner, 500, "Delta");
-        BankAccount savingAccount = bankAccountFactory.createSavingAccount(accountOwner);
-        BankAccount businessAccount = bankAccountFactory.createBusinessAccount(accountOwner, 2000);
+        List<BankAccount> createdAccounts = accountCreationService.createAccounts(
+                new AccountRequest("Current Account", () -> bankAccountFactory.createCurrentAccount(accountOwner, 500)),
+                new AccountRequest("Student Account", () -> bankAccountFactory.createStudentAccount(accountOwner, 500, "Delta")),
+                new AccountRequest("Saving Account", () -> bankAccountFactory.createSavingAccount(accountOwner)),
+                new AccountRequest("Business Account", () -> bankAccountFactory.createBusinessAccount(accountOwner, 2000))
+        );
+
+        BankAccount bankAccount = createdAccounts.get(0);
+        BankAccount studentAccount = createdAccounts.get(1);
+        BankAccount savingAccount = createdAccounts.get(2);
+        BankAccount businessAccount = createdAccounts.get(3);
 
         System.out.println("Generated account number: " + bankAccount.getAccountnum());
 
