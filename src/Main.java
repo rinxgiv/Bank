@@ -4,6 +4,7 @@ import accounts.AccountCreationService.AccountRequest;
 import accounts.AccountXmlService;
 import factory.BankAccountFactory;
 import notifiers.ConsoleNotifier;
+import notifiers.TimeNotifierDecorator;
 import people.Owner;
 import serializers.AccountNumberXmlSerializer;
 import serializers.Serializer;
@@ -23,7 +24,7 @@ public class Main {
         Owner accountOwner = new Owner("Iryna", "Pukas");
 
         BankAccountFactory bankAccountFactory = new BankAccountFactory();
-        AccountCreationService accountCreationService = new AccountCreationService(new ConsoleNotifier());
+        AccountCreationService accountCreationService = new AccountCreationService(new TimeNotifierDecorator(new ConsoleNotifier()));
 
         List<BankAccount> createdAccounts = accountCreationService.createAccounts(
                 new AccountRequest("Current Account", () -> bankAccountFactory.createCurrentAccount(accountOwner, 500)),
