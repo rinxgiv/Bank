@@ -34,6 +34,8 @@ private String accountnum;
 
 
 
+    public abstract String getAccountType();
+
     public String getAccountnum() {
         return accountnum;
     }

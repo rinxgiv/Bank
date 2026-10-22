@@ -1,6 +1,9 @@
 import Account.*;
+import accounts.AccountXmlService;
 import factory.BankAccountFactory;
 import people.Owner;
+import serializers.AccountNumberXmlSerializer;
+import serializers.Serializer;
 import transfers.TransferService;
 import transfers.DepositTransferService;
 import transfers.WithdrawTransferService;
@@ -14,8 +17,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Owner accountOwner = new Owner("Tomas", "Pesek");
-        accountOwner.setLastname("Pokorny");
+        Owner accountOwner = new Owner("Iryna", "Pukas");
 
         BankAccountFactory bankAccountFactory = new BankAccountFactory();
 
@@ -113,6 +115,29 @@ public class Main {
         for (Transaction transaction : transferLoggerService.getByAccount(studentAccount.getAccountnum())) {
             System.out.println(transaction);
         }
+
+        // --- XML výpis účtů ---
+        AccountXmlService accountXmlService = new AccountXmlService();
+
+        System.out.println("Account XML:");
+        System.out.println(accountXmlService.toXml(bankAccount));
+
+        List<BankAccount> allAccounts = new ArrayList<>();
+        allAccounts.add(bankAccount);
+        allAccounts.add(studentAccount);
+        allAccounts.add(savingAccount);
+        allAccounts.add(businessAccount);
+
+        System.out.println("All accounts XML:");
+        System.out.println(accountXmlService.toXml(allAccounts));
+
+        Serializer accountNumberSerializer = new AccountNumberXmlSerializer();
+
+        System.out.println("Account number XML:");
+        System.out.println(accountNumberSerializer.serialize(bankAccount));
+
+        System.out.println("All account numbers XML:");
+        System.out.println(accountNumberSerializer.serializeAll(allAccounts));
 
     }
 

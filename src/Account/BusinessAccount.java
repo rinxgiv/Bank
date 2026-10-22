@@ -6,6 +6,11 @@ public class BusinessAccount extends BankAccount {
     private static final double INTEREST_RATE = 0.005; // 0.5 %
 
     private String accounttype = "Business Account";
+
+    @Override
+    public String getAccountType() {
+        return accounttype;
+    }
     public BusinessAccount(Owner owner) {
         super(owner);
     }

@@ -7,6 +7,11 @@ public class CurrentAccount extends BankAccount {
 
     private String accounttype = "Current Account";
 
+    @Override
+    public String getAccountType() {
+        return accounttype;
+    }
+
     public CurrentAccount(Owner owner) {
         super(owner);
     }

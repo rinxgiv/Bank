@@ -9,6 +9,11 @@ public class StudentAccount extends BankAccount {
 
     private String accounttype = "Student Account";
 
+    @Override
+    public String getAccountType() {
+        return accounttype;
+    }
+
     public StudentAccount(Owner owner) {
         super(owner);
     }

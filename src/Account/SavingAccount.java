@@ -6,6 +6,11 @@ public class SavingAccount extends BankAccount {
     private static final double INTEREST_RATE = 0.02; // 2 %
 
     private String accounttype = "Saving Account";
+
+    @Override
+    public String getAccountType() {
+        return accounttype;
+    }
     public SavingAccount(Owner owner) {
         super(owner);
     }
