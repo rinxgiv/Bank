@@ -1,13 +1,8 @@
 import Account.*;
-import accounts.AccountCreationService;
 import accounts.AccountCreationService.AccountRequest;
-import accounts.AccountXmlService;
+import di.Conteiner;
 import factory.BankAccountFactory;
-import notifiers.ConsoleNotifier;
-import notifiers.TimeNotifierDecorator;
 import people.Owner;
-import serializers.AccountNumberXmlSerializer;
-import serializers.Serializer;
 import transfers.TransferService;
 import transfers.DepositTransferService;
 import transfers.WithdrawTransferService;
@@ -21,12 +16,32 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Owner accountOwner = new Owner("Iryna", "Pukas");
+        Conteiner container = new Conteiner();
 
-        BankAccountFactory bankAccountFactory = new BankAccountFactory();
-        AccountCreationService accountCreationService = new AccountCreationService(new TimeNotifierDecorator(new ConsoleNotifier()));
+        Owner accountOwner = container.ownerService.createOwner("Iryna", "Pukas");
 
-        List<BankAccount> createdAccounts = accountCreationService.createAccounts(
+        // --- Dekorátory služby pro vytváření účtů ---
+        System.out.println("ORIGINAL");
+        container.bankAccountService.createCurrentAccount(accountOwner, 500);
+        System.out.println("========");
+
+        System.out.println("WITH LOGGER");
+        container.bankAccountWithLoggerService.createStudentAccount(accountOwner, 500, "Delta");
+        System.out.println("========");
+
+        System.out.println("WITH TIME LOGGER");
+        container.bankAccountWithTimeLoggerService.createSavingAccount(accountOwner);
+        System.out.println("========");
+
+        System.out.println("WITH LOGGER AND TIME LOGGER");
+        container.bankAccountWithLoggerAndTimeLoggerService.createBusinessAccount(accountOwner, 500);
+        System.out.println("========");
+
+        System.out.println("Accounts in service: " + container.bankAccountService.getBankAccounts().size());
+
+        BankAccountFactory bankAccountFactory = container.bankAccountFactory;
+
+        List<BankAccount> createdAccounts = container.accountCreationService.createAccounts(
                 new AccountRequest("Current Account", () -> bankAccountFactory.createCurrentAccount(accountOwner, 500)),
                 new AccountRequest("Student Account", () -> bankAccountFactory.createStudentAccount(accountOwner, 500, "Delta")),
                 new AccountRequest("Saving Account", () -> bankAccountFactory.createSavingAccount(accountOwner)),
@@ -66,9 +81,9 @@ public class Main {
 
         printBalance(bankAccount);
 
-        TransferLoggerService transferLoggerService = new TransferLoggerService();
+        TransferLoggerService transferLoggerService = container.transferLoggerService;
 
-        DepositTransferService depositTransferService = new DepositTransferService(transferLoggerService);
+        DepositTransferService depositTransferService = container.depositTransferService;
         depositTransferService.deposit(bankAccount, 400);
         depositTransferService.deposit(bankAccount, 100);
         depositTransferService.deposit(bankAccount, 200);
@@ -76,7 +91,7 @@ public class Main {
 
         printBalance(bankAccount);
 
-        WithdrawTransferService withdrawTransferService = new WithdrawTransferService(transferLoggerService);
+        WithdrawTransferService withdrawTransferService = container.withdrawTransferService;
 
         withdrawTransferService.withdraw(bankAccount, 300);
         withdrawTransferService.withdraw(bankAccount, 300);
@@ -88,7 +103,7 @@ public class Main {
         printBalance(bankAccount);
 
         // --- Simulace převodu mezi dvěma účty ---
-        TransferService transferService = new TransferService(transferLoggerService);
+        TransferService transferService = container.transferService;
 
         // běžný převod bez poplatku
         transferService.transfer(bankAccount, studentAccount, 100);
@@ -129,7 +144,7 @@ public class Main {
         }
 
         // --- XML výpis účtů ---
-        AccountXmlService accountXmlService = new AccountXmlService();
+        var accountXmlService = container.accountXmlService;
 
         System.out.println("Account XML:");
         System.out.println(accountXmlService.toXml(bankAccount));
@@ -143,13 +158,25 @@ public class Main {
         System.out.println("All accounts XML:");
         System.out.println(accountXmlService.toXml(allAccounts));
 
-        Serializer accountNumberSerializer = new AccountNumberXmlSerializer();
+        var accountNumberSerializer = container.accountNumberXmlSerializer;
 
         System.out.println("Account number XML:");
         System.out.println(accountNumberSerializer.serialize(bankAccount));
 
         System.out.println("All account numbers XML:");
         System.out.println(accountNumberSerializer.serializeAll(allAccounts));
+
+        // --- JSON výpis čísel účtů ---
+        var jsonSerializer = container.accountNumberJsonSerializer;
+        var gsonSerializer = container.accountNumberGsonSerializer;
+
+        System.out.println("Account number JSON (manual):");
+        System.out.println(jsonSerializer.serialize(bankAccount));
+        System.out.println(jsonSerializer.serializeAll(allAccounts));
+
+        System.out.println("Account number JSON (Gson):");
+        System.out.println(gsonSerializer.serialize(bankAccount));
+        System.out.println(gsonSerializer.serializeAll(container.bankAccountService.getBankAccounts()));
 
     }
 

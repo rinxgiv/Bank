@@ -11,10 +11,11 @@ public class WithdrawTransferService {
 
     private final TransferLoggerService transferLoggerService;
 
-    private final TransactionFactory transactionFactory = new TransactionFactory();
+    private final TransactionFactory transactionFactory;
 
-    public WithdrawTransferService(TransferLoggerService transferLoggerService) {
+    public WithdrawTransferService(TransferLoggerService transferLoggerService, TransactionFactory transactionFactory) {
         this.transferLoggerService = transferLoggerService;
+        this.transactionFactory = transactionFactory;
     }
 
     public void withdraw(BankAccount account, double amount) {

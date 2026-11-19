@@ -31,7 +31,7 @@ public class AccountXmlService {
         xStream.omitField(BankAccount.class, "notifier");
 
         // pro případné čtení XML povolíme jen naše třídy (bezpečnost)
-        xStream.allowTypes(new Class[]{
+        xStream.allowTypes(new Class<?>[]{
                 CurrentAccount.class, StudentAccount.class, SavingAccount.class, BusinessAccount.class, Owner.class
         });
     }

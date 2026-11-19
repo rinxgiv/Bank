@@ -10,10 +10,11 @@ public class TransferService {
 
     private final TransferLoggerService transferLoggerService;
 
-    private final TransactionFactory transactionFactory = new TransactionFactory();
+    private final TransactionFactory transactionFactory;
 
-    public TransferService(TransferLoggerService transferLoggerService) {
+    public TransferService(TransferLoggerService transferLoggerService, TransactionFactory transactionFactory) {
         this.transferLoggerService = transferLoggerService;
+        this.transactionFactory = transactionFactory;
     }
 
     public void transfer(BankAccount from, BankAccount to, double amount) {

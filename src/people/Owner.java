@@ -12,6 +12,19 @@ public class Owner {
         this.name = name;
         this.lastname = lastname;
     }
+    public Owner(String uuid, String name, String lastname) {
+        this(name, lastname);
+        this.uuid = uuid;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

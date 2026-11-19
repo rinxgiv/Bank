@@ -1,6 +1,5 @@
 package Account;
 
-import notifiers.ConsoleNotifier;
 import notifiers.Notifiers;
 import people.Owner;
 
@@ -12,7 +11,7 @@ public abstract class BankAccount implements InterestPoint {
 
     private double balance;
 
-    protected Notifiers notifier = new ConsoleNotifier();
+    protected Notifiers notifier;
 
 private String accountnum;
 
@@ -35,6 +34,18 @@ private String accountnum;
 
 
     public abstract String getAccountType();
+
+    public void setNotifier(Notifiers notifier) {
+        this.notifier = notifier;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
     public String getAccountnum() {
         return accountnum;
