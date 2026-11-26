@@ -74,12 +74,12 @@ public class Main {
                 System.out.println("school: " + stdAccount.getSchoolName());
             }
 
-            System.out.println("balance: " + container.moneyFormatter.format(account.getBalance(), account.getMena()));
+            container.statementService.printBalance(account);
 
         }
 
 
-        printBalance(container, bankAccount);
+        container.statementService.printBalance(bankAccount);
 
         TransferLoggerService transferLoggerService = container.transferLoggerService;
 
@@ -89,7 +89,7 @@ public class Main {
         depositTransferService.deposit(bankAccount, 200);
         depositTransferService.deposit(bankAccount, 600);
 
-        printBalance(container, bankAccount);
+        container.statementService.printBalance(bankAccount);
 
         WithdrawTransferService withdrawTransferService = container.withdrawTransferService;
 
@@ -100,7 +100,7 @@ public class Main {
         withdrawTransferService.withdraw(bankAccount, 50);
         withdrawTransferService.withdraw(bankAccount, 400);
 
-        printBalance(container, bankAccount);
+        container.statementService.printBalance(bankAccount);
 
         // --- Simulace převodu mezi dvěma účty ---
         TransferService transferService = container.transferService;
@@ -111,21 +111,21 @@ public class Main {
         // převod z business účtu – odečte se poplatek 0.3 %
         transferService.transfer(businessAccount, studentAccount, 1000);
 
-        printBalance(container, bankAccount);
-        printBalance(container, studentAccount);
-        printBalance(container, businessAccount);
+        container.statementService.printBalance(bankAccount);
+        container.statementService.printBalance(studentAccount);
+        container.statementService.printBalance(businessAccount);
 
         BankAccount euroAccount = bankAccountFactory.createCurrentAccount(accountOwner, 300, Mena.EUR);
         BankAccount dollarAccount = bankAccountFactory.createCurrentAccount(accountOwner, 100, Mena.USD);
-        printBalance(container, euroAccount);
-        printBalance(container, dollarAccount);
+        container.statementService.printBalance(euroAccount);
+        container.statementService.printBalance(dollarAccount);
 
         transferService.transfer(euroAccount, bankAccount, 10);
         transferService.transfer(bankAccount, dollarAccount, 220);
 
-        printBalance(container, euroAccount);
-        printBalance(container, bankAccount);
-        printBalance(container, dollarAccount);
+        container.statementService.printBalance(euroAccount);
+        container.statementService.printBalance(bankAccount);
+        container.statementService.printBalance(dollarAccount);
 
         // ošetření vstupů
         try {
@@ -147,12 +147,12 @@ public class Main {
         // --- Historie transakcí ---
         System.out.println("All transactions:");
         for (Transaction transaction : transferLoggerService.getAll()) {
-            printTransaction(container, transaction);
+            container.statementService.printTransaction(transaction);
         }
 
         System.out.println("Student account transactions:");
         for (Transaction transaction : transferLoggerService.getByAccount(studentAccount.getAccountnum())) {
-            printTransaction(container, transaction);
+            container.statementService.printTransaction(transaction);
         }
 
         // --- XML výpis účtů ---
@@ -190,16 +190,5 @@ public class Main {
         System.out.println(gsonSerializer.serialize(bankAccount));
         System.out.println(gsonSerializer.serializeAll(container.bankAccountService.getBankAccounts()));
 
-    }
-
-    private static void printTransaction(Conteiner container, Transaction transaction) {
-        System.out.println(transaction.getCreatedAt() + " " + transaction.getType() + " "
-                + transaction.getFromAccountNum() + " -> " + transaction.getToAccountNum()
-                + " amount: " + container.moneyFormatter.format(transaction.getAmount(), transaction.getMena())
-                + " fee: " + container.moneyFormatter.format(transaction.getFee(), transaction.getMena()));
-    }
-
-    private static void printBalance(Conteiner container, BankAccount bankAccount) {
-        System.out.println("balance: " + container.moneyFormatter.format(bankAccount.getBalance(), bankAccount.getMena()));
     }
 }

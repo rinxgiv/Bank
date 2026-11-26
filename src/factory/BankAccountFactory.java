@@ -7,7 +7,6 @@ import Account.Mena;
 import Account.SavingAccount;
 import Account.StudentAccount;
 import accounts.services.AccountNumberGenerator;
-import currency.MoneyFormatter;
 import notifiers.Notifiers;
 import people.Owner;
 
@@ -19,15 +18,11 @@ public class BankAccountFactory {
 
     private final Notifiers notifier;
 
-    private final MoneyFormatter moneyFormatter;
-
     private final Mena defaultMena;
 
-    public BankAccountFactory(AccountNumberGenerator accountNumberGenerator, Notifiers notifier,
-                              MoneyFormatter moneyFormatter, Mena defaultMena) {
+    public BankAccountFactory(AccountNumberGenerator accountNumberGenerator, Notifiers notifier, Mena defaultMena) {
         this.accountNumberGenerator = accountNumberGenerator;
         this.notifier = notifier;
-        this.moneyFormatter = moneyFormatter;
         this.defaultMena = defaultMena;
     }
 
@@ -75,7 +70,6 @@ public class BankAccountFactory {
         bankAccount.setUuid(UUID.randomUUID().toString());
         bankAccount.setAccountnum(accountNumberGenerator.generate());
         bankAccount.setNotifier(notifier);
-        bankAccount.setMoneyFormatter(moneyFormatter);
         bankAccount.setMena(mena);
     }
 

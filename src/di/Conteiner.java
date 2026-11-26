@@ -6,6 +6,7 @@ import accounts.AccountXmlService;
 import accounts.services.AccountNumberGenerator;
 import accounts.services.BankAccountService;
 import accounts.services.IBankAccountService;
+import accounts.services.StatementService;
 import accounts.services.decorators.BankAccountWithLoggerService;
 import accounts.services.decorators.BankAccountWithLoggerWithTimeService;
 import currency.ExchangeRateService;
@@ -39,12 +40,13 @@ public class Conteiner {
             Mena.EUR, 25.0
     ));
     public MoneyFormatter moneyFormatter = new MoneyFormatter(exchangeRateService, prepocetNa, menaUctu);
+    public StatementService statementService = new StatementService(moneyFormatter);
 
     public OwnerFactory ownerFactory = new OwnerFactory();
     public OwnerService ownerService = new OwnerService(ownerFactory);
 
     public AccountNumberGenerator accountNumberGenerator = new AccountNumberGenerator("0800");
-    public BankAccountFactory bankAccountFactory = new BankAccountFactory(accountNumberGenerator, notifier, moneyFormatter, menaUctu);
+    public BankAccountFactory bankAccountFactory = new BankAccountFactory(accountNumberGenerator, notifier, menaUctu);
     public AccountCreationService accountCreationService = new AccountCreationService(notifier);
 
     public IBankAccountService bankAccountService = new BankAccountService(bankAccountFactory);

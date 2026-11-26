@@ -22,15 +22,6 @@ public class SavingAccount extends BankAccount {
         super(owner, accountnum, 0);
     }
 
-    public void add(double amount){
-        System.out.println("Add amount: " + formatMoney(amount));
-        amount = amount + (amount * 0.05);
-double newBalance = this.getBalance() + amount;
-
-        this.setBalance(newBalance);
-
-    }
-
     @Override
     public void calculateInterest() {
         double interest = this.getBalance() * INTEREST_RATE;

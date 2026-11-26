@@ -19,18 +19,6 @@ public class BusinessAccount extends BankAccount {
         super(owner, balance);
     }
 
-    public void sub(double amount){
-        System.out.println("Sub amount: " + formatMoney(amount));
-
-        double newBalance = this.getBalance() - amount - (amount * 0.1);
-
-        if (newBalance < 0) {
-            throw new RuntimeException("Balance is less than 0");
-        }
-        this.setBalance(newBalance);
-
-    }
-
     @Override
     public void calculateInterest() {
         double interest = this.getBalance() * INTEREST_RATE;

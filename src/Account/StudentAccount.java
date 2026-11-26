@@ -29,17 +29,6 @@ public class StudentAccount extends BankAccount {
     public String getSchoolName(){
         return this.school;
     }
-    public void sub(double amount){
-        System.out.println("Sub amount: " + formatMoney(amount));
-
-        double newBalance = this.getBalance() - amount;
-
-        if (newBalance < -5000) {
-            throw new RuntimeException("Balance is less than -5000");
-        }
-        this.setBalance(newBalance);
-
-    }
 
     @Override
     public void calculateInterest() {

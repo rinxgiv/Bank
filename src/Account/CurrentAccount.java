@@ -23,18 +23,6 @@ public class CurrentAccount extends BankAccount {
     public CurrentAccount(Owner owner, String accountnum, double balance) {
         super(owner, accountnum, balance);
     }
-    @Override
-    public void sub(double amount){
-        System.out.println("Sub amount: " + formatMoney(amount));
-
-        double newBalance = this.getBalance() - amount;
-
-        if (newBalance < 0) {
-            throw new RuntimeException("Balance is negative");
-        }
-        this.setBalance(newBalance);
-
-    }
 
     @Override
     public void calculateInterest() {
