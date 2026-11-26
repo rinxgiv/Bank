@@ -1,5 +1,6 @@
 package di;
 
+import Account.Mena;
 import accounts.AccountCreationService;
 import accounts.AccountXmlService;
 import accounts.services.AccountNumberGenerator;
@@ -7,6 +8,8 @@ import accounts.services.BankAccountService;
 import accounts.services.IBankAccountService;
 import accounts.services.decorators.BankAccountWithLoggerService;
 import accounts.services.decorators.BankAccountWithLoggerWithTimeService;
+import currency.ExchangeRateService;
+import currency.MoneyFormatter;
 import factory.BankAccountFactory;
 import factory.TransactionFactory;
 import notifiers.ConsoleNotifier;
@@ -23,14 +26,25 @@ import transfers.TransferLoggerService;
 import transfers.TransferService;
 import transfers.WithdrawTransferService;
 
+import java.util.Map;
+
 public class Conteiner {
     public Notifiers notifier = new TimeNotifierDecorator(new ConsoleNotifier());
+
+    public Mena menaUctu = Mena.CZK;
+    public Mena prepocetNa = Mena.USD;
+
+    public ExchangeRateService exchangeRateService = new ExchangeRateService(Map.of(
+            Mena.USD, 22.0,
+            Mena.EUR, 25.0
+    ));
+    public MoneyFormatter moneyFormatter = new MoneyFormatter(exchangeRateService, prepocetNa, menaUctu);
 
     public OwnerFactory ownerFactory = new OwnerFactory();
     public OwnerService ownerService = new OwnerService(ownerFactory);
 
     public AccountNumberGenerator accountNumberGenerator = new AccountNumberGenerator("0800");
-    public BankAccountFactory bankAccountFactory = new BankAccountFactory(accountNumberGenerator, notifier);
+    public BankAccountFactory bankAccountFactory = new BankAccountFactory(accountNumberGenerator, notifier, moneyFormatter, menaUctu);
     public AccountCreationService accountCreationService = new AccountCreationService(notifier);
 
     public IBankAccountService bankAccountService = new BankAccountService(bankAccountFactory);
@@ -45,7 +59,7 @@ public class Conteiner {
             new DepositTransferService(transferLoggerService, transactionFactory);
     public WithdrawTransferService withdrawTransferService =
             new WithdrawTransferService(transferLoggerService, transactionFactory);
-    public TransferService transferService = new TransferService(transferLoggerService, transactionFactory);
+    public TransferService transferService = new TransferService(transferLoggerService, transactionFactory, exchangeRateService);
 
     public AccountXmlService accountXmlService = new AccountXmlService();
     public Serializer accountNumberXmlSerializer = new AccountNumberXmlSerializer();

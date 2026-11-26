@@ -25,7 +25,7 @@ public class CurrentAccount extends BankAccount {
     }
     @Override
     public void sub(double amount){
-        System.out.println("Sub amount: " + amount);
+        System.out.println("Sub amount: " + formatMoney(amount));
 
         double newBalance = this.getBalance() - amount;
 

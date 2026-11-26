@@ -23,7 +23,7 @@ public class SavingAccount extends BankAccount {
     }
 
     public void add(double amount){
-        System.out.println("Add amount: " + amount);
+        System.out.println("Add amount: " + formatMoney(amount));
         amount = amount + (amount * 0.05);
 double newBalance = this.getBalance() + amount;
 

@@ -74,12 +74,12 @@ public class Main {
                 System.out.println("school: " + stdAccount.getSchoolName());
             }
 
-            System.out.println("balance: " + account.getBalance());
+            System.out.println("balance: " + container.moneyFormatter.format(account.getBalance(), account.getMena()));
 
         }
 
 
-        printBalance(bankAccount);
+        printBalance(container, bankAccount);
 
         TransferLoggerService transferLoggerService = container.transferLoggerService;
 
@@ -89,7 +89,7 @@ public class Main {
         depositTransferService.deposit(bankAccount, 200);
         depositTransferService.deposit(bankAccount, 600);
 
-        printBalance(bankAccount);
+        printBalance(container, bankAccount);
 
         WithdrawTransferService withdrawTransferService = container.withdrawTransferService;
 
@@ -100,7 +100,7 @@ public class Main {
         withdrawTransferService.withdraw(bankAccount, 50);
         withdrawTransferService.withdraw(bankAccount, 400);
 
-        printBalance(bankAccount);
+        printBalance(container, bankAccount);
 
         // --- Simulace převodu mezi dvěma účty ---
         TransferService transferService = container.transferService;
@@ -111,9 +111,21 @@ public class Main {
         // převod z business účtu – odečte se poplatek 0.3 %
         transferService.transfer(businessAccount, studentAccount, 1000);
 
-        printBalance(bankAccount);
-        printBalance(studentAccount);
-        printBalance(businessAccount);
+        printBalance(container, bankAccount);
+        printBalance(container, studentAccount);
+        printBalance(container, businessAccount);
+
+        BankAccount euroAccount = bankAccountFactory.createCurrentAccount(accountOwner, 300, Mena.EUR);
+        BankAccount dollarAccount = bankAccountFactory.createCurrentAccount(accountOwner, 100, Mena.USD);
+        printBalance(container, euroAccount);
+        printBalance(container, dollarAccount);
+
+        transferService.transfer(euroAccount, bankAccount, 10);
+        transferService.transfer(bankAccount, dollarAccount, 220);
+
+        printBalance(container, euroAccount);
+        printBalance(container, bankAccount);
+        printBalance(container, dollarAccount);
 
         // ošetření vstupů
         try {
@@ -135,12 +147,12 @@ public class Main {
         // --- Historie transakcí ---
         System.out.println("All transactions:");
         for (Transaction transaction : transferLoggerService.getAll()) {
-            System.out.println(transaction);
+            printTransaction(container, transaction);
         }
 
         System.out.println("Student account transactions:");
         for (Transaction transaction : transferLoggerService.getByAccount(studentAccount.getAccountnum())) {
-            System.out.println(transaction);
+            printTransaction(container, transaction);
         }
 
         // --- XML výpis účtů ---
@@ -180,7 +192,14 @@ public class Main {
 
     }
 
-    private static void printBalance(BankAccount bankAccount) {
-        System.out.println("balance: " + bankAccount.getBalance());
+    private static void printTransaction(Conteiner container, Transaction transaction) {
+        System.out.println(transaction.getCreatedAt() + " " + transaction.getType() + " "
+                + transaction.getFromAccountNum() + " -> " + transaction.getToAccountNum()
+                + " amount: " + container.moneyFormatter.format(transaction.getAmount(), transaction.getMena())
+                + " fee: " + container.moneyFormatter.format(transaction.getFee(), transaction.getMena()));
+    }
+
+    private static void printBalance(Conteiner container, BankAccount bankAccount) {
+        System.out.println("balance: " + container.moneyFormatter.format(bankAccount.getBalance(), bankAccount.getMena()));
     }
 }

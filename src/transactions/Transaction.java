@@ -1,5 +1,7 @@
 package transactions;
 
+import Account.Mena;
+
 import java.time.LocalDateTime;
 
 public class Transaction {
@@ -18,16 +20,19 @@ public class Transaction {
 
     private final double fee;
 
+    private final Mena mena;
+
     private final LocalDateTime createdAt;
 
     public Transaction(String uuid, TransactionType type, String fromAccountNum, String toAccountNum,
-                       double amount, double fee, LocalDateTime createdAt) {
+                       double amount, double fee, Mena mena, LocalDateTime createdAt) {
         this.uuid = uuid;
         this.type = type;
         this.fromAccountNum = fromAccountNum;
         this.toAccountNum = toAccountNum;
         this.amount = amount;
         this.fee = fee;
+        this.mena = mena;
         this.createdAt = createdAt;
     }
 
@@ -55,6 +60,10 @@ public class Transaction {
         return fee;
     }
 
+    public Mena getMena() {
+        return mena;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -62,6 +71,6 @@ public class Transaction {
     @Override
     public String toString() {
         return createdAt + " " + type + " " + fromAccountNum + " -> " + toAccountNum
-                + " amount: " + amount + " fee: " + fee;
+                + " amount: " + amount + " " + mena + " fee: " + fee + " " + mena;
     }
 }

@@ -20,7 +20,7 @@ public class BusinessAccount extends BankAccount {
     }
 
     public void sub(double amount){
-        System.out.println("Sub amount: " + amount);
+        System.out.println("Sub amount: " + formatMoney(amount));
 
         double newBalance = this.getBalance() - amount - (amount * 0.1);
 

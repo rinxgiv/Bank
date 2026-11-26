@@ -2,6 +2,7 @@ package transfers;
 
 import Account.BankAccount;
 import Account.BusinessAccount;
+import currency.ExchangeRateService;
 import factory.TransactionFactory;
 
 public class TransferService {
@@ -12,9 +13,13 @@ public class TransferService {
 
     private final TransactionFactory transactionFactory;
 
-    public TransferService(TransferLoggerService transferLoggerService, TransactionFactory transactionFactory) {
+    private final ExchangeRateService exchangeRateService;
+
+    public TransferService(TransferLoggerService transferLoggerService, TransactionFactory transactionFactory,
+                           ExchangeRateService exchangeRateService) {
         this.transferLoggerService = transferLoggerService;
         this.transactionFactory = transactionFactory;
+        this.exchangeRateService = exchangeRateService;
     }
 
     public void transfer(BankAccount from, BankAccount to, double amount) {
@@ -42,7 +47,8 @@ public class TransferService {
         }
 
         from.setBalance(from.getBalance() - totalWithdrawn);
-        to.setBalance(to.getBalance() + amount);
+        double received = exchangeRateService.convert(amount, from.getMena(), to.getMena());
+        to.setBalance(to.getBalance() + received);
 
         transferLoggerService.log(transactionFactory.createTransfer(from, to, amount, fee));
     }

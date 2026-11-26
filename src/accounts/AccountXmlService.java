@@ -29,10 +29,11 @@ public class AccountXmlService {
 
         // notifier je chování, ne data účtu
         xStream.omitField(BankAccount.class, "notifier");
+        xStream.omitField(BankAccount.class, "moneyFormatter");
 
         // pro případné čtení XML povolíme jen naše třídy (bezpečnost)
         xStream.allowTypes(new Class<?>[]{
-                CurrentAccount.class, StudentAccount.class, SavingAccount.class, BusinessAccount.class, Owner.class
+                CurrentAccount.class, StudentAccount.class, SavingAccount.class, BusinessAccount.class, Owner.class, Account.Mena.class
         });
     }
 

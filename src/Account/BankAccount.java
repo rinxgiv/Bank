@@ -1,5 +1,6 @@
 package Account;
 
+import currency.MoneyFormatter;
 import notifiers.Notifiers;
 import people.Owner;
 
@@ -11,7 +12,11 @@ public abstract class BankAccount implements InterestPoint {
 
     private double balance;
 
+    private Mena mena = Mena.CZK;
+
     protected Notifiers notifier;
+
+    protected MoneyFormatter moneyFormatter;
 
 private String accountnum;
 
@@ -39,6 +44,22 @@ private String accountnum;
         this.notifier = notifier;
     }
 
+    public void setMoneyFormatter(MoneyFormatter moneyFormatter) {
+        this.moneyFormatter = moneyFormatter;
+    }
+
+    public Mena getMena() {
+        return mena;
+    }
+
+    public void setMena(Mena mena) {
+        this.mena = mena;
+    }
+
+    protected String formatMoney(double amount) {
+        return moneyFormatter.format(amount, mena);
+    }
+
     public String getUuid() {
         return uuid;
     }
@@ -63,7 +84,7 @@ private String accountnum;
         this.balance = balance;
     }
     public void sub(double amount){
-        this.notifier.notify("Sub amount: " + amount);
+        this.notifier.notify("Sub amount: " + formatMoney(amount));
 
         double newBalance = this.balance - amount;
 
@@ -74,7 +95,7 @@ private String accountnum;
 
     }
    public void add(double amount){
-       System.out.println("Add amount: " + amount);
+       System.out.println("Add amount: " + formatMoney(amount));
         this.balance=this.balance+amount;
     }
 
